@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const сomparisonFile = (file1, file2) => {
+const comparisonFile = (file1, file2) => {
   const keysFile1 = Object.keys(file1);
   const keysFile2 = Object.keys(file2);
   const keys = _.union(keysFile1, keysFile2).sort();
@@ -19,4 +19,4 @@ const сomparisonFile = (file1, file2) => {
   return `{${result}\n}`;
 };
 
-export default сomparisonFile;
+export default comparisonFile;
