@@ -39,13 +39,17 @@ const getStylish = (tree) => {
                   `${currentIndent}+ ${key}: ${stringify(value2, depth + 1)}`,
                 ].join('\n')
                 : throw new Error(`Unknown type ${status}.`);
-      return `${currentIndent}${bracketIndent}${lines.join('\n')}`;
     }).join('\n');
 
     return `{${lines}}`;
   };
 
-  return iter(tree);
+  try {
+    return iter(tree);
+  } catch (error) {
+    console.error(error.message);
+    return 'Error: Unknown type';
+  }
 };
 
 export default getStylish;
