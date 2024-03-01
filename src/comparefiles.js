@@ -10,26 +10,19 @@ const getSortedKeys = (obj1, obj2) => {
 
 const compareFiles = (data1, data2) => {
   const keys = getSortedKeys(data1, data2);
-  const conditions = keys.map((key) => {
+
+  const differences = keys.reduce((acc, key) => {
     const value1 = data1[key];
     const value2 = data2[key];
-    if (_.has(data1, key) && !_.has(data2, key)) {
-      return { key, value1, status: 'deleted' };
+
+    if (value1 !== value2) {
+      acc[key] = { value1, value2 };
     }
-    if (!_.has(data1, key) && _.has(data2, key)) {
-      return { key, value2, status: 'added' };
-    }
-    if (_.isObject(value1) && _.isObject(value2)) {
-      return { key, children: compareFiles(value1, value2), status: 'nested' };
-    }
-    if (_.isEqual(value1, value2)) {
-      return { key, value1, status: 'unchanged' };
-    }
-    return {
-      key, value1, value2, status: 'changed',
-    };
-  });
-  return conditions;
+
+    return acc;
+  }, {});
+
+  return differences;
 };
 
 export default compareFiles;
