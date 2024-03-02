@@ -13,10 +13,7 @@ const compareFiles = (data1, data2) => {
   const conditions = keys.filter((key) => {
     const value1 = data1[key];
     const value2 = data2[key];
-    if (_.isEqual(value1, value2)) {
-      return false;
-    }
-    return true;
+    return !_.isEqual(value1, value2);
   });
 
   const differences = conditions.map((key) => {
