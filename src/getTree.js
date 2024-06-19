@@ -22,7 +22,7 @@ const сomparisonFile = (file1, file2) => {
       type = 'changed';
       value = {
         oldValue: file1[key],
-        newValue: file2[key]
+        newValue: file2[key],
       };
     } else {
       type = 'unchanged';
@@ -31,16 +31,16 @@ const сomparisonFile = (file1, file2) => {
 
     return type === 'changed'
       ? {
-          key,
-          type,
-          value: value.oldValue,
-          newValue: value.newValue
-        }
+        key,
+        type,
+        value: value.oldValue,
+        newValue: value.newValue,
+      }
       : {
-          key,
-          type,
-          value
-        };
+        key,
+        type,
+        value,
+      };
   });
 };
 
