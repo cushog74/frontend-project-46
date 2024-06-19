@@ -44,16 +44,16 @@ or
 ```
 gendiff __fixtures__/file1.json __fixtures__/file2.json
 ```
-[![asciicast](https://asciinema.org/a/wlLGcPJRLKfrjp4VDmpCLOVPq.svg)](https://asciinema.org/a/wlLGcPJRLKfrjp4VDmpCLOVPq)
+![asciicast]
 
 ## plain comparison :
 ```
 gendiff -f plain __fixtures__/file1.json __fixtures__/file2.json
 ```
-[![asciicast](https://asciinema.org/a/CvwzFFp3aA25ZOFx2vmilnvYH.svg)](https://asciinema.org/a/CvwzFFp3aA25ZOFx2vmilnvYH)
+![asciicast]
 
 ## json comparison :
 ```
 gendiff -f json __fixtures__/file1.json __fixtures__/file2.json
 ```
-[![asciicast](https://asciinema.org/a/POS2bRwATWJnkpwsErPl8teXb.svg)](https://asciinema.org/a/POS2bRwATWJnkpwsErPl8teXb)
+![asciicast]
