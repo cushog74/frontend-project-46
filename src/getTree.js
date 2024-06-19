@@ -20,15 +20,27 @@ const сomparisonFile = (file1, file2) => {
       value = сomparisonFile(file1[key], file2[key]);
     } else if (file1[key] !== file2[key]) {
       type = 'changed';
-      value = { oldValue: file1[key], newValue: file2[key] };
+      value = {
+        oldValue: file1[key],
+        newValue: file2[key]
+      };
     } else {
       type = 'unchanged';
       value = file1[key];
     }
 
     return type === 'changed'
-      ? { key, type, value: value.oldValue, newValue: value.newValue }
-      : { key, type, value };
+      ? {
+          key,
+          type,
+          value: value.oldValue,
+          newValue: value.newValue
+        }
+      : {
+          key,
+          type,
+          value
+        };
   });
 };
 
