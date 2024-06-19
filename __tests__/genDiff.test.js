@@ -22,5 +22,5 @@ test.each([
   ['json', 'two json files', 'file1.json', 'file2.json', expectedJson],
   ['json', 'two yml files', 'filepath1.yml', 'filepath2.yml', expectedJson],
 ])('%s comparsion %s', (format, nameTest, file1, file2, expected) => {
-  expected(genDiff(getFilePath(file1), getFilePath(file2), format)).toBe(expected);
+  expect(genDiff(getFilePath(file1), getFilePath(file2), format)).toBe(expected);
 });
