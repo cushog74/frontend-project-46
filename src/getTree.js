@@ -6,19 +6,29 @@ const сomparisonFile = (file1, file2) => {
   const keys = _.sortBy(_.union(keysFile1, keysFile2));
 
   return keys.map((key) => {
-    const type = !Object.hasOwn(file1, key) ? 'added' :
-                 !Object.hasOwn(file2, key) ? 'deleted' :
-                 _.isObject(file1[key]) && _.isObject(file2[key]) ? 'nested' :
-                 file1[key] !== file2[key] ? 'changed' :
-                 'unchanged';
+    let type;
+    let value;
 
-    const value = type === 'nested' ? сomparisonFile(file1[key], file2[key]) :
-                  type === 'added' ? file2[key] :
-                  type === 'deleted' ? file1[key] :
-                  type === 'changed' ? { oldValue: file1[key], newValue: file2[key] } :
-                  file1[key];
+    if (!Object.hasOwn(file1, key)) {
+      type = 'added';
+      value = file2[key];
+    } else if (!Object.hasOwn(file2, key)) {
+      type = 'deleted';
+      value = file1[key];
+    } else if (_.isObject(file1[key]) && _.isObject(file2[key])) {
+      type = 'nested';
+      value = сomparisonFile(file1[key], file2[key]);
+    } else if (file1[key] !== file2[key]) {
+      type = 'changed';
+      value = { oldValue: file1[key], newValue: file2[key] };
+    } else {
+      type = 'unchanged';
+      value = file1[key];
+    }
 
-    return { key, type, ...(type === 'changed' && { value: value.oldValue, newValue: value.newValue }), ...(type !== 'changed' && { value }) };
+    return type === 'changed'
+      ? { key, type, value: value.oldValue, newValue: value.newValue }
+      : { key, type, value };
   });
 };
 
