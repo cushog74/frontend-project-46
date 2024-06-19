@@ -1,16 +1,29 @@
-#!/usr/bin/env node
-import { program } from 'commander';
-import genDiff from '../src/index.js';
-
-program
-  .name('gendiff')
-  .description('Compares two configuration files and shows a difference.')
-  .version('1.0.0')
-  .option('-f, --format [type]', 'output format', 'stylish')
-  .argument('<filepath1>')
-  .argument('<filepath2>')
-  .action((filepath1, filepath2, options) => {
-    console.log(genDiff(filepath1, filepath2, options.format));
-  });
-
-program.parse();
+const formatValue = (value) => {
+    if (typeof value === 'object' && value !== null) {
+      return '[complex value]';
+    }
+    return typeof value === 'string' ? `'${value}'` : value;
+  };
+  
+  const genDiff = (file1, file2, format) => {
+    // ... ваша логика сравнения файлов ...
+    // Предположим, что `diff` - это результат сравнения
+  
+    const formattedDiff = diff.map(({ key, type, value, newValue }) => {
+      const formattedValue = formatValue(value);
+      const formattedNewValue = formatValue(newValue);
+      switch (type) {
+        case 'added':
+          return `Property '${key}' was added with value: ${formattedValue}`;
+        case 'deleted':
+          return `Property '${key}' was removed`;
+        case 'changed':
+          return `Property '${key}' was updated. From ${formattedValue} to ${formattedNewValue}`;
+        // ... другие случаи ...
+        default:
+          return `Property '${key}' is unchanged`;
+      }
+    }).join('\n');
+  
+    return formattedDiff;
+  };
