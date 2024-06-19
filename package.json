@@ -14,7 +14,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "commander": "^12.1.0",
+        "commander": "^11.1.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21"
     },
