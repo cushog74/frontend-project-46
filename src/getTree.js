@@ -1,48 +1,24 @@
 import _ from 'lodash';
 
-const getType = (file1, file2, key) => {
-  if (!Object.hasOwn(file1, key)) {
-    return 'added';
-  }
-  if (!Object.hasOwn(file2, key)) {
-    return 'deleted';
-  }
-  if (_.isObject(file1[key]) && _.isObject(file2[key])) {
-    return 'nested';
-  }
-  if (file1[key] !== file2[key]) {
-    return 'changed';
-  }
-  return 'unchanged';
-};
-
-const getValue = (file1, file2, key, type) => {
-  switch (type) {
-    case 'added':
-      return file2[key];
-    case 'deleted':
-      return file1[key];
-    case 'nested':
-      return сomparisonFile(file1[key], file2[key]);
-    case 'changed':
-      return { oldValue: file1[key], newValue: file2[key] };
-    default:
-      return file1[key];
-  }
-};
-
 const сomparisonFile = (file1, file2) => {
   const keysFile1 = Object.keys(file1);
   const keysFile2 = Object.keys(file2);
   const keys = _.sortBy(_.union(keysFile1, keysFile2));
 
   return keys.map((key) => {
-    const type = getType(file1, file2, key);
-    const value = getValue(file1, file2, key, type);
+    const type = !Object.hasOwn(file1, key) ? 'added' :
+                 !Object.hasOwn(file2, key) ? 'deleted' :
+                 _.isObject(file1[key]) && _.isObject(file2[key]) ? 'nested' :
+                 file1[key] !== file2[key] ? 'changed' :
+                 'unchanged';
 
-    return type === 'changed'
-      ? { key, type, ...value }
-      : { key, value, type };
+    const value = type === 'nested' ? сomparisonFile(file1[key], file2[key]) :
+                  type === 'added' ? file2[key] :
+                  type === 'deleted' ? file1[key] :
+                  type === 'changed' ? { oldValue: file1[key], newValue: file2[key] } :
+                  file1[key];
+
+    return { key, type, ...(type === 'changed' && { value: value.oldValue, newValue: value.newValue }), ...(type !== 'changed' && { value }) };
   });
 };
 
