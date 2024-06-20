@@ -12,8 +12,8 @@ program
   .argument('<filepath1>')
   .argument('<filepath2>')
   .action((filepath1, filepath2, options) => {
-    console.log(`Путь к первому файлу: ${filepath1}`);
-    console.log(`Путь ко второму файлу: ${filepath2}`);
+    console.log(`Путь к первому файлу: ${__fixtures__/filepath1}`);
+    console.log(`Путь ко второму файлу: ${__fixtures__/filepath2}`);
     const result = gendiff(filepath1, filepath2, options.format);
     console.log(result);
   });
