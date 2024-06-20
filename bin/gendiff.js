@@ -1,20 +1,26 @@
-#!/usr/bin/env node
-import { Command } from 'commander';
-import gendiff from '../src/index.js';
+import { readFileSync } from 'fs';
+import path from 'path';
+import parse from './parse.js'; // Функция для парсинга данных
+import format from './formatters/index.js'; // Функция для форматирования результата
 
-const program = new Command();
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-program
-  .name('gendiff')
-  .description('Compares two configuration files and shows a difference.')
-  .option('-v, --version', 'output the version number')
-  .option('-f, --format <type>', 'output format', 'stylish')
-  .argument('<filepath1>')
-  .argument('<filepath2>')
-  .action((filepath1, filepath2) => {
-    const options = program.opts().format;
-    const result = gendiff(filepath1, filepath2, options);
-    console.log(result);
-  });
+const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 
-program.parse();
+const gendiff = (filepath1, filepath2, formatName = 'stylish') => {
+  const data1 = parse(readFile(filepath1));
+  const data2 = parse(readFile(filepath2));
+
+  // Функция для сравнения данных
+  const diff = compare(data1, data2);
+
+  // Возвращаем отформатированный результат
+  return format(diff, formatName);
+};
+
+// Функция для сравнения данных (примерная реализация)
+const compare = (data1, data2) => {
+  // Ваш код для сравнения данных и создания структуры с различиями
+};
+
+export default gendiff;
