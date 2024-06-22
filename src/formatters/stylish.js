@@ -1,54 +1,50 @@
 import _ from 'lodash';
 
-const getIndents = (depth) => {
-  const indent = '  ';
-  const indentSize = depth * 2;
-  return {
-    leftIndent: indent.repeat(indentSize - 1),
-    rightIndent: indent.repeat(indentSize - 2),
-  };
+const getIdent = (depth, replacer = ' ', spacesCount = 4) => replacer.repeat((depth * spacesCount) - 2);
+const getBrackeIndent = (depth, replacer = ' ', spacesCount = 4) => replacer.repeat((depth * spacesCount) - spacesCount);
+
+const stringify = (data, depth = 1) => {
+  if (!_.isPlainObject(data)) return `${data}`;
+
+  const currentIndent = getIdent(depth);
+  const bracketIndent = getBrackeIndent(depth);
+  const currentValue = Object.entries(data);
+
+  const lines = currentValue.map(([key, value]) => `${currentIndent}  ${key}: ${stringify(value, depth + 1)}`);
+
+  const result = ['{', ...lines, `${bracketIndent}}`].join('\n');
+  return result;
 };
 
-const renderToString = (value, depth) => {
-  if (!_.isObject(value)) {
-    return String(value);
-  }
-  const idents = getIndents(depth);
-
-  const lines = Object.entries(value).map(([key, val]) => {
-    if (!_.isObject(val)) {
-      return `${idents.leftIndent}  ${key}: ${val}`;
-    }
-
-    return `${idents.leftIndent}  ${key}: ${renderToString(val, depth + 1)}`;
-  });
-  return ['{', ...lines, `${idents.rightIndent}}`].join('\n');
-};
-
-export default (tree) => {
-  const iter = (node, depth) => {
-    const idents = getIndents(depth);
-    const result = node.map(({
-      key, value, type, newValue,
-    }) => {
-      const renderValue = renderToString(value, depth + 1);
-      switch (type) {
-        case 'unchanged':
-          return `${idents.leftIndent}  ${key}: ${renderValue}`;
-        case 'changed':
-          return `${idents.leftIndent}- ${key}: ${renderValue}\n${idents.leftIndent}+ ${key}: ${renderToString(newValue, depth + 1)}`;
-        case 'deleted':
-          return `${idents.leftIndent}- ${key}: ${renderValue}`;
-        case 'added':
-          return `${idents.leftIndent}+ ${key}: ${renderValue}`;
+const getStylish = (tree) => {
+  const iter = (currentValue, depth = 1) => {
+    const currentIndent = getIdent(depth);
+    const bracketIndent = getBrackeIndent(depth);
+    const lines = currentValue.flatMap((node) => {
+      const {
+        key, children, status, value1, value2,
+      } = node;
+      switch (status) {
         case 'nested':
-          return `${idents.leftIndent}  ${key}: ${iter(value, depth + 1)}`;
+          return `${currentIndent}  ${key}: ${iter(children, depth + 1)}`;
+        case 'deleted':
+          return `${currentIndent}- ${key}: ${stringify(value1, depth + 1)}`;
+        case 'added':
+          return `${currentIndent}+ ${key}: ${stringify(value2, depth + 1)}`;
+        case 'unchanged':
+          return `${currentIndent}  ${key}: ${stringify(value1, depth + 1)}`;
+        case 'changed':
+          return [
+            `${currentIndent}- ${key}: ${stringify(value1, depth + 1)}`,
+            `${currentIndent}+ ${key}: ${stringify(value2, depth + 1)}`,
+          ];
         default:
-          throw new Error('This type is not in use.');
+          throw new Error(`Unknown type ${status}.`);
       }
     });
-    // return result.join('\n');
-    return ['{', ...result, `${idents.rightIndent}}`].join('\n');
+    return ['{', ...lines, `${bracketIndent}}`].join('\n');
   };
-  return iter(tree, 1);
+  return iter(tree);
 };
+
+export default getStylish;

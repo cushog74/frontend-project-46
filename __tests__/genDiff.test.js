@@ -4,18 +4,13 @@ import path, { dirname } from 'path';
 import { readFileSync } from 'fs';
 import gendiff from '../src/index.js';
 
-const getFixturePath = (filepath) => {
-  const fullPath = path.join(__dirname, '..', '__fixtures__', filepath);
-  console.log(`Путь к файлу: ${fullPath}`); // Вывод лога для отладки
-  return fullPath;
-};
-
-const readFile = (filepath) => readFileSync(getFixturePath(filepath), 'utf-8');
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const getString = (data) => String(data).trim();
+
+const getFixturePath = (filepath) => path.join(__dirname, '..', '__fixtures__', filepath);
+const readFile = (filepath) => readFileSync(getFixturePath(filepath), 'utf-8');
 
 const files = [['filepath1.json', 'filepath2.json'], ['filepath1.yaml', 'filepath2.yaml'], ['filepath1.yml', 'filepath2.yml']];
 

@@ -1,33 +1,36 @@
 import _ from 'lodash';
 
-const renderToString = (value) => {
-  if (_.isObject(value)) {
-    return '[complex value]';
-  }
-  return typeof value === 'string' ? `'${value}'` : value;
+const getValue = (value) => {
+  if (typeof value === 'string') return `'${value}'`;
+  return _.isObject(value) ? '[complex value]' : String(value);
 };
 
-export default (tree) => {
-  const iter = (node, keys) => {
-    const result = node
-      .filter(({ type }) => type !== 'unchanged')
-      .map(({
-        key, value, type, newValue,
-      }) => {
-        switch (type) {
-          case 'added':
-            return `Property '${keys}${key}' was added with value: ${renderToString(value)}`;
-          case 'deleted':
-            return `Property '${keys}${key}' was removed`;
-          case 'changed':
-            return `Property '${keys}${key}' was updated. From ${renderToString(value)} to ${renderToString(newValue)}`;
+const getPlain = (data) => {
+  const iter = (value, path) => {
+    const result = value
+      .flatMap((node) => {
+        const {
+          key, children, status, value1, value2,
+        } = node;
+        const fullPath = (path === '') ? `${key}` : `${path}.${key}`;
+        switch (status) {
           case 'nested':
-            return iter(value, `${keys}${key}.`);
+            return iter(children, fullPath);
+          case 'deleted':
+            return `Property '${fullPath}' was removed`;
+          case 'added':
+            return `Property '${fullPath}' was added with value: ${getValue(value2)}`;
+          case 'changed':
+            return `Property '${fullPath}' was updated. From ${getValue(value1)} to ${getValue(value2)}`;
+          case 'unchanged':
+            return [];
           default:
-            throw new Error('This type is not in use.');
+            throw new Error(`Unknown type: ${status}.`);
         }
       });
-    return result.join('\n');
+    return [...result].join('\n');
   };
-  return iter(tree, '');
+  return iter(data, '');
 };
+
+export default getPlain;

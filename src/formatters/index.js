@@ -1,15 +1,16 @@
+import getStylish from './stylish.js';
 import plain from './plain.js';
-import stylish from './stylish.js';
+import json from './json.js';
 
-export default (diffTree, format) => {
+export default (data, format) => {
   switch (format) {
     case 'stylish':
-      return stylish(diffTree);
+      return getStylish(data);
     case 'plain':
-      return plain(diffTree);
+      return plain(data);
     case 'json':
-      return JSON.stringify(diffTree, null, ' ');
+      return json(data);
     default:
-      throw new Error(`Unknown format! ${format}`);
+      throw new Error(`Unknown ${format}.`);
   }
 };

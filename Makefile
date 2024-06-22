@@ -1,15 +1,18 @@
 install:
 	npm ci
 
-publish:
-	npm publish --dry-run
-
 lint:
-	npx eslint .
+	npx eslint
+
+gendiff:
+	node bin/gendiff.js
+
+publish:
+	nmp publish --dry-run
 
 test:
-	npm test
+	npm test --test-reporter=spec
 
 test-coverage:
-	npx jest --coverage
+	npm test -- --coverage --coverageProvider=v8
 	
