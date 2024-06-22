@@ -4,9 +4,6 @@ import path, { dirname } from 'path';
 import { readFileSync } from 'fs';
 import gendiff from '../src/index.js';
 
-const path = require('path');
-const { readFileSync } = require('fs');
-
 const getFixturePath = (filepath) => {
   const fullPath = path.join(__dirname, '..', '__fixtures__', filepath);
   console.log(`Путь к файлу: ${fullPath}`); // Вывод лога для отладки
